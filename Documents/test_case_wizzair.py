@@ -1,79 +1,196 @@
-from selenium import webdriver
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+11.
+12.
+13.
+14.
+15.
+16.
+17.
+18.
+19.
+20.
+21.
+22.
+23.
+24.
+25.
+26.
+27.
+28.
+29.
+30.
+31.
+32.
+33.
+34.
+35.
+36.
+37.
+38.
+39.
+40.
+41.
+42.
+43.
+44.
+45.
+46.
+47.
+48.
+49.
+50.
+51.
+52.
+53.
+54.
+55.
+56.
+57.
+58.
+59.
+60.
+61.
+62.
+63.
+64.
+65.
+66.
+67.
+68.
+69.
+70.
+71.
+72.
+73.
+74.
+75.
+76.
+77.
+78.
+79.
+80.
+81.
+82.
+83.
+84.
+85.
+86.
+87.
+88.
+89.
+90.
+91.
+92.
+93.
+94.
+95.
+96.
+97.
+98.
+99.
+100.
+101.
+102.
+103.
+104.
+105.
+106.
+107.
+108.
+109.
+110.
+111.
+112.
+113.
+114.
+115.
+116.
+117.
+118.
+from selenium import  webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import unittest
-firstname = 'julia'
-lastname = 'nowak'
-gender = 'male'
-country_code="+48"
-valid_phone_number = 112233445
-adres_mailowy = 'justyna.gmail.com'
-haslo_uzytkownika = 'trudnehasl0'
-valid_country = 'Polska'
 
+firstname="Marcin"
+lastname="Kowalski"
+gender='male'
+country_code="+48"
+valid_phone_number="123123123"
+invalid_email = 'jhsdhfjh.pl'
+valid_country = "Chiny"
+password = "Qwerty123@sjdjk"
 
 class WizzairRegistration(unittest.TestCase):
     def setUp(self):
+        """
+        Warunki wstępne
+        """
+        # Przeglądarka włączona
         self.driver = webdriver.Chrome()
         self.driver.maximize_window()
+        # na stronie wizzair.com/Pl-pl
         self.driver.get('https://wizzair.com/pl-pl#/')
-        '''
-        Warunki wstepne
-        '''
+
     def tearDown(self):
+        """
+        Sprzątanie po teście
+        """
         self.driver.quit()
-        '''
-        Sprzatanie po tescie
-        '''
+
     def testWrongEmail(self):
-        #kliknij w prawym gornym rogu przycis zaloguj
+        """
+        TC 001: Niekompletny email brak '@')
+        """
+        # KROKI:
         driver = self.driver
-        zaloguj_btn = WebDriverWait(driver, 45).until(EC.element_to_be_clickable((By.XPATH, '//button[@data-test="navigation-menu-signin"]')))
+        # 1. Kliknij w prawym górnym rogu ZALOGUJ SIĘ
+        zaloguj_btn = WebDriverWait(driver, 45).\
+            until(EC.element_to_be_clickable((By.XPATH, '//button[@data-test="navigation-menu-signin"]')))
         zaloguj_btn.click()
-
-        #kliknij rejestracja
-
-        WebDriverWait(driver, 45).until(EC.element_to_be_clickable((By.XPATH, '//button[text()=" Rejestracja "]'))).click()
-        time.sleep(3)
-        # wprowadz imie
-
-        fn = WebDriverWait(driver, 45).until(EC.element_to_be_clickable((By.NAME, 'firstName')))
+        #  2. Kliknij REJESTRACJA
+        WebDriverWait(driver, 45).\
+            until(EC.element_to_be_clickable((By.XPATH, '//button[text()=" Rejestracja "]'))).click()
+        # 3. Wprowadź imię
+        fn = WebDriverWait(driver, 45). \
+            until(EC.element_to_be_clickable((By.NAME, 'firstName')))
         fn.send_keys(firstname)
-
-        #wprowadz nazwisko
+        # 4. Wprowadź nazwisko
         driver.find_element_by_name('lastName').send_keys(lastname)
-        #wprowadz plec
+        # 5. Wybierz płeć
         if gender == 'male':
-            m = driver.find_element_by_xpath ('//label[@data-test = "register-gendermale"]')
+            m = driver.find_element_by_xpath('//label[@data-test="register-gendermale"]')
             fn.click()
             m.click()
-
+            # driver.execute_script('arguments[0].click()', m)
         else:
             driver.find_element_by_xpath('//label[@data-test="register-genderfemale"]').click()
-        time.sleep(4)
 
-        #wprowadz kod kraju
+        # 6. Wpisz kod kraju
         cc = driver.find_element_by_xpath('//div[@data-test="booking-register-country-code"]')
         cc.click()
         cc2 = driver.find_element_by_xpath('//input[@name="phone-number-country-code"]')
         cc2.send_keys(country_code)
         country_to_choose = WebDriverWait(self.driver, 40).until(EC.element_to_be_clickable((By.XPATH, "//li[@data-test='PL']")))
         country_to_choose.click()
-        time.sleep(4)
-        #wpisz numer telefonu
-        nmb = driver.find_element_by_name("phoneNumberValidDigits").send_keys(valid_phone_number)
-        time.sleep(4)
-        #wpisz nieprawidlowy adres email
-        mail = driver.find_element_by_xpath('//input[@data-test="booking-register-email"]')
-        mail.send_keys(adres_mailowy)
-        time.sleep(3)
-        #wpisz haslo
-        haslo = driver.find_element_by_xpath('//input[@data-test="booking-register-password"]')
-        haslo.send_keys(haslo_uzytkownika)
-        time.sleep(4)
-        #wybierz narodowosc
+        # 7. Wpisz nr telefonu
+        driver.find_element_by_name("phoneNumberValidDigits").send_keys(valid_phone_number)
+        # 7. Wpisz niepoprawny e-mail (brak znaku '@')
+        driver.find_element_by_name("email").send_keys(invalid_email)
+        # 8. Wpisz hasło
+        driver.find_element_by_name("password").send_keys(password)
+        # 9. Wybierz narodowość
         country_field = driver.find_element_by_xpath('//input[@data-test="booking-register-country"]')
         country_field.click()
         # Wyszukaj kraje
@@ -92,19 +209,26 @@ class WizzairRegistration(unittest.TestCase):
                 option.click()
                 # Wyjdz z petli - juz znalazlem i kliknalem
                 break
-        #marketing
-        driver.find_element_by_xpath('//label[for="registration-privacy-policy-checkbox"][@class="rf-checkbox__label"]').click()
-        sleep(4)
+        # 10. Zaznacz "Akceptuję Informację o polityce prywatności"
+        driver.find_element_by_xpath(
+            '//label[@for="registration-privacy-policy-checkbox"][@class="rf-checkbox__label"]').click()
+        # 11. Kliknij ZAREJESTRUJ
+        driver.find_element_by_xpath('//button[@data-test="booking-register-submit"]').click()
+        """TEST: SPRAWDZAMY OCZEKIWANY REZULTAT"""
 
+        # Wyszukuję wszystkie błędy
+        error_notices = driver.find_elements_by_xpath('//span[@class="rf-input__error__message"]/span')
+        # Zapisuję widoczne błędy do listy visible_error_notices
+        visible_error_notices = []
+        for error in error_notices:
+            # Jesli jest widoczny, to dodaj do listy
+            if error.is_displayed():
+                visible_error_notices.append(error)
+        # Sprawdzam, czy widoczny jest tylko jeden błąd
+        assert len(visible_error_notices) == 1
+        # Sprawdzam treść widocznego błędu
+        error_text = visible_error_notices[0].get_attribute("innerText")
+        assert error_text == "Nieprawidłowy adres e-mail"
 
-
-
-        '''
-        test case 1 - niepoprawny adres email
-        '''
-
-
-
-if __name__ =='__main__':
-    print('main')
+if __name__=='__main__':
     unittest.main(verbosity=2)
